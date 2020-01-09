@@ -7,8 +7,14 @@ import pytest
 # @pytest.mark.skip(reason="already tested")
 class TestUserAddToBasketFromProductPage():
     @pytest.fixture(scope="function", autouse=True)
-    def setup(self):
-        pass
+    def setup(self, browser):
+        link = 'http://selenium1py.pythonanywhere.com/ru/accounts/login/'
+        page = LoginPage(browser, link)
+        page.open()
+        email = str(time.time()) + "@fakemail.org"
+        passwd = str(time.time())
+        page.register_new_user(email, passwd)
+        page.should_be_authorized_user()
 
     def test_user_cant_see_success_message(self, browser):
         link = 'http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207'
@@ -21,7 +27,7 @@ class TestUserAddToBasketFromProductPage():
         page = ProductPage(browser, link)
         page.open()
         page.add_product_to_basket()
-        page.solve_quiz_and_get_code()
+        # page.solve_quiz_and_get_code()
         page.should_be_product_name()
         page.should_be_product_price()
         page.should_be_succes_product_name()
